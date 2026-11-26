@@ -86,7 +86,7 @@ class LmdeployPlugin(ModelServer):
     ICON = "lmdeploy"
     api = "2.2"
     apis = APIS
-    LIBS_FLOOR = "1.66.0"  # hub.py and SPEAKS
+    LIBS_FLOOR = "1.99.0"  # the base's changes page-only (1.99.0), hub.py and SPEAKS (1.66.0)
     DEFAULT_PORT = 23333
     NATIVE = "lmdeploy"
     KEYED = False  # LMDeploy takes keys on its command line alone (--api-keys), and a key never goes on one

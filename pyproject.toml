@@ -10,8 +10,9 @@ readme = "README.md"
 requires-python = ">=3.10"
 # the library it plugs into: liminal-libs 1.66.0's AI bases (ModelServer, its instances, ports and conflicts, start at
 # boot, SPEAKS), its Hugging Face pieces (machines/hub.py), the child, download, endpoint, GPU and uv pieces, the
-# PAGE_ONLY_HOOKS word, and LMDeploy's mark in icons.js
-dependencies = ["liminal-libs>=1.66.0"]
+# PAGE_ONLY_HOOKS word, and LMDeploy's mark in icons.js; and 1.99.0, the floor: the base's changes (install, set_key,
+# add_instance, start and the rest) asked only from its page
+dependencies = ["liminal-libs>=1.99.0"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]

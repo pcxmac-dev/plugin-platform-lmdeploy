@@ -6,7 +6,8 @@ The first release: LMDeploy as the fourth of the platform's top four inference e
 inference engines, top 4 agentic harnesses (open source)", "both linux and windows compatibility"; 2026-11-25:
 LMDeploy, TurboMind only, never the silent PyTorch fallback). A model server on liminal-libs 1.66.0's AI bases
 (`ModelServer`, plugin API 2.2), `SECTION = "ai"`, `GROUP = "inference"`, `order = 513`, `ICON = "lmdeploy"`: the
-standard interface of a model server, and four hooks of its own for its models.
+standard interface of a model server, and four hooks of its own for its models. Needs liminal-libs>=1.99.0, whose
+model server base asks its changes only from the page.
 
 - **Install, Update, Uninstall** from the page, on Windows x64 and on Linux x86-64 with glibc 2.28 or newer (WSL 2
   included): uv 0.13.8, an environment on uv's CPython 3.12.16, LMDeploy 0.18.0's cp312 wheel and PyTorch 2.11.0's

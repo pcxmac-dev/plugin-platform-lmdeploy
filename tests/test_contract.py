@@ -83,7 +83,7 @@ def test_its_version_and_floor_are_its_pyprojects():
     text = pyproject()
     assert re.search(r'^version = "([^"]+)"', text, re.M).group(1) == module.__version__ == "0.1.0"
     floor = re.search(r'"liminal-libs>=([0-9.]+)"', text).group(1)
-    assert floor == module.MACHINE.LIBS_FLOOR == "1.66.0"
+    assert floor == module.MACHINE.LIBS_FLOOR == "1.99.0"  # the base's changes page-only
     assert version_tuple(liminal_libs.__version__) >= version_tuple(floor)
     assert 'lmdeploy = "plugin_platform_lmdeploy"' in text  # its entry point under liminal.providers
 
