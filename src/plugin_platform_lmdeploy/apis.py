@@ -107,7 +107,7 @@ LMDEPLOY_COMMAND = Api(
            "with a warning alone; this plugin refuses such a model before a start and stops a server whose log says "
            "it fell back. Its other commands (chat, lite, convert, check_env) are not run from here; the install's "
            "check imports the package with the environment's own Python."),
-    base=("lmdeploy (home/app/0.18.0/venv, this plugin's: Scripts\lmdeploy.exe on Windows, bin/lmdeploy on Linux; "
+    base=("lmdeploy (home/app/0.18.0/venv, this plugin's: Scripts\\lmdeploy.exe on Windows, bin/lmdeploy on Linux; "
           "or an lmdeploy of yours on PATH, used as it is)"),
     version="LMDeploy 0.18.0 (PyPI, 2026-09-28): CPython 3.10 to 3.14 wheels for win_amd64 and manylinux_2_28_x86_64",
     auth="none of its own: a key would be --api-keys on its command line, which this plugin never writes",
