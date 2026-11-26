@@ -381,10 +381,27 @@ def test_a_server_whose_log_says_it_fell_back_to_pytorch_is_stopped(world):
     child = world.kids.made[-1]
     log = p.log_path("default")
     log.parent.mkdir(parents=True, exist_ok=True)
-    log.write_text("2026-11-26 01:00:00,000 - lmdeploy - WARNING - archs.py:51 - Fallback to pytorch engine because "
+    log.write_text("2026-11-26 01:00:00 liminal: default started (pid 4301): lmdeploy serve api_server ...\n"
+                   "2026-11-26 01:00:09,000 - lmdeploy - WARNING - archs.py:51 - Fallback to pytorch engine because "
                    "turbomind is not built.\n", encoding="utf-8")
     instance = p.instance("default")
     seen = p.look(at(p, instance), instance)
     assert not seen.ok and "handed its model to its PyTorch engine" in seen.said and "it is stopped" in seen.said
     assert seen.facts["engine"].startswith("fell back") and child.stops == 1 and not child.alive
     assert world.transport.asked == []
+
+
+def test_an_earlier_runs_fallback_in_the_log_is_not_this_ones(world):
+    """The log is appended to across starts: a warning before the last start's line is an earlier run's."""
+    p = ready(world)
+    local(p)
+    p.start("default")
+    log = p.log_path("default")
+    log.parent.mkdir(parents=True, exist_ok=True)
+    log.write_text("2026-11-25 23:00:00 liminal: default started (pid 4100): ...\n"
+                   "2026-11-25 23:00:09,000 - lmdeploy - WARNING - Fallback to pytorch engine because ...\n"
+                   "2026-11-26 01:00:00 liminal: default started (pid 4301): ...\n", encoding="utf-8")
+    answering(world)
+    instance = p.instance("default")
+    seen = p.look(at(p, instance), instance)
+    assert seen.ok and world.kids.made[-1].stops == 0

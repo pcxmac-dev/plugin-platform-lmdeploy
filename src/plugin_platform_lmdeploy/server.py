@@ -333,7 +333,8 @@ def launch(p, instance, key: str = "") -> children.Launch:
 
 def fell_back(p, instance) -> bool:
     """Whether a local instance's log says LMDeploy handed its model to the PyTorch engine since its last start (its
-    log's end read: a file, nothing run)."""
+    log's end read, from the line the library's child writes at each start, "liminal: NAME started (pid N)": the log
+    is appended to across starts, so an earlier run's warning is not this one's. A file, nothing run)."""
     path = p.log_path(instance.name)
     try:
         with open(path, "rb") as f:
@@ -343,7 +344,8 @@ def fell_back(p, instance) -> bool:
             tail = f.read().decode("utf-8", "replace")
     except OSError:
         return False
-    return FALLBACK.lower() in tail.lower()
+    at = tail.rfind(f"liminal: {instance.name} started (pid")
+    return FALLBACK.lower() in (tail[at:] if at >= 0 else tail).lower()
 
 
 def start_words(p, instance) -> str:
