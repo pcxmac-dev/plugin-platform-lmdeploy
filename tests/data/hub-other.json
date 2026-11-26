@@ -1,0 +1,1 @@
+{"_id": "6700aa00bb11cc22dd33ee44", "id": "someone/Odd-Model-7B", "gated": false, "cardData": {"license": "other", "license_name": "odd-community-licence", "license_link": "LICENSE.md"}, "siblings": [{"rfilename": "config.json"}, {"rfilename": "model.safetensors"}]}

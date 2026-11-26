@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plugin-platform-lmdeploy"
+version = "0.1.0"  # the plugin's own release (CHANGELOG.md); the app shows it on the Plugins view
+description = "LMDeploy for Liminal's platform: installed here, its servers run by TurboMind alone, its models fetched."
+readme = "README.md"
+requires-python = ">=3.10"
+# the library it plugs into: liminal-libs 1.66.0's AI bases (ModelServer, its instances, ports and conflicts, start at
+# boot, SPEAKS), its Hugging Face pieces (machines/hub.py), the child, download, endpoint, GPU and uv pieces, the
+# PAGE_ONLY_HOOKS word, and LMDeploy's mark in icons.js
+dependencies = ["liminal-libs>=1.66.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.entry-points."liminal.providers"]
+lmdeploy = "plugin_platform_lmdeploy"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
