@@ -47,6 +47,7 @@ FOUND_MOST = 12  # lookups kept at once, the newest first
 FIND_S = 15.0  # an ask of the Hub's API waits at most this long
 CACHE_S = 60.0  # the models folder is read again at most this often
 PULL_S = 21600.0  # a download stops by itself after 6 hours
+EVERY_S = hf.EVERY_S  # how often a download's progress is said
 ROOM = 1 << 30  # what a download leaves free besides its own size
 PLACEHOLDER = "Qwen/Qwen3-0.6B, or any org/name of Hugging Face's"
 # taken out of the platform's environment for hf besides the library's own (hub.DROP) and Liminal's
@@ -354,7 +355,7 @@ def _download(p, found: Found, program: Path, token: str, panel) -> dict:
     except OSError as e:
         return p.said(f"{found.model} was not downloaded: {folder} could not be made ({' '.join(str(e).split())})",
                       False)
-    watch = hf.Watch(target, found.size, found.model, panel)
+    watch = hf.Watch(target, found.size, found.model, panel, every=EVERY_S)
     try:
         with watch:
             code = p.run_whole(hf.download_argv(program, found.model), panel, env=hf_environment(p, token),
