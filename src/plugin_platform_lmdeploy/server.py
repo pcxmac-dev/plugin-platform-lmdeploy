@@ -348,6 +348,31 @@ def fell_back(p, instance) -> bool:
     return FALLBACK.lower() in (tail[at:] if at >= 0 else tail).lower()
 
 
+def fallback_words(name: str, stopped: str) -> str:
+    return (f"{name}: LMDeploy handed its model to its PyTorch engine, which is never used here, so it is stopped "
+            f"({' '.join(str(stopped).split())[:200]}). Serve a model TurboMind serves")
+
+
+def stop_fallbacks(p) -> list[str]:
+    """Each local instance running whose log says, since its last start, that it fell back to the PyTorch engine,
+    stopped, in words (fallback_words). A file read for each running one, nothing asked over the network: the status
+    and serving call it, so a fallback runs no longer than the page's next draw or another plugin's next ask."""
+    out = []
+    for name in p.running():
+        try:
+            instance = p.instance(name)
+        except Refusal:
+            continue
+        if instance.where != "local" or not fell_back(p, instance):
+            continue
+        try:
+            stopped = str(p.stop(name).get("said", ""))
+        except Refusal as e:
+            stopped = f"its stop was refused: {e}"
+        out.append(fallback_words(name, stopped))
+    return out
+
+
 def start_words(p, instance) -> str:
     """What a start of `instance` does, after the base's words."""
     model = str(instance.settings.get("model") or "").strip() or "its model (none is set yet: Change… first)"
@@ -375,15 +400,14 @@ def _models(p, instance, rows) -> list[dict]:
 def look(p, at, instance) -> Seen:
     """What an instance answers now: GET /v1/models (its model, owned_by 'lmdeploy': else it is not LMDeploy; 401:
     it wants its key), GET /health (healthy, initializing, sleeping; 503 unhealthy). A local one that runs and does not
-    answer yet is said so; one whose log says it fell back to the PyTorch engine is stopped, and said so. Asked by the
-    Models tab and a click, never by a status."""
+    answer yet is said so; one whose log says it fell back to the PyTorch engine is stopped, and said so (as the status
+    and serving stop it too: stop_fallbacks). Asked by the Models tab and a click, never by a status."""
     address = p.address(instance)
     local = instance.where == "local"
     if local and instance.name in p.running() and fell_back(p, instance):
         stopped = p.stop(instance.name)
-        return Seen(False, f"{instance.name}: LMDeploy handed its model to its PyTorch engine, which is never used "
-                           f"here, so it is stopped ({' '.join(str(stopped.get('said', '')).split())[:200]}). Serve a "
-                           "model TurboMind serves", facts={"engine": "fell back to PyTorch: stopped"})
+        return Seen(False, fallback_words(instance.name, stopped.get("said", "")),
+                    facts={"engine": "fell back to PyTorch: stopped"})
     try:
         listed = at.get("/v1/models")
     except EndpointError as e:

@@ -173,8 +173,15 @@ class LmdeployPlugin(ModelServer):
 
     def status(self) -> dict:
         """Its Main (the base's: the install, its instances, main_more), Install… and Uninstall… disabled while a
-        model is being downloaded, the download said as why."""
+        model is being downloaded, the download said as why. First, a running server whose log says it fell back to
+        the PyTorch engine is stopped (a file read), and said as a problem."""
+        try:
+            fell = server.stop_fallbacks(self)
+        except Exception as e:  # noqa: BLE001 - a status never raises: the Models tab still stops it
+            fell = [f"whether a server fell back to PyTorch could not be read: {e}"]
         out = super().status()
+        if fell:
+            out["problem"] = "; ".join(w for w in (str(out.get("problem") or ""), *fell) if w)
         busy = models.downloading(self)
         if busy:
             for action in out.get("actions") or ():
@@ -209,6 +216,10 @@ class LmdeployPlugin(ModelServer):
     def serving(self, name: str = "") -> dict:
         """What it offers the other AI plugins (the base's rows), each local instance's model said as the name its
         server answers to: what a harness sends as its model, never the folder it loads."""
+        try:
+            server.stop_fallbacks(self)  # never offered to another plugin while it runs on PyTorch
+        except Exception:  # noqa: BLE001 - the status says what could not be read
+            pass
         out = super().serving(name)
         kept = self.kept_instances().instances
         for row in out.get("instances", []):

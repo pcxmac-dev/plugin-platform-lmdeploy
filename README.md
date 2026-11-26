@@ -100,8 +100,9 @@ its tool call parser (one of the thirteen LMDeploy 0.18.0 registers). It is star
   alone, and that engine always starts a second process holding an unauthenticated loopback port. So a model whose
   config.json names an architecture outside TurboMind's nineteen, or that SmoothQuant quantized, or that has no
   config.json, is refused before the start; Serve it… is disabled for it on the Models tab. Should LMDeploy fall back
-  all the same, its log's warning ("Fallback to pytorch engine") is read when the instance is looked at, and the
-  server is stopped, said so. `--distributed-executor-backend uni` keeps Ray out even then.
+  all the same, its log's warning ("Fallback to pytorch engine") is read at every draw of the page (a file read),
+  before another plugin is told what it serves and when the instance is looked at, and the server is stopped, said
+  as a problem. `--distributed-executor-backend uni` keeps Ray out even then.
 - **One port.** TurboMind on one GPU is one process, and its only listening socket is the instance's port.
 - **Offline.** `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1`, the snapshot's whole path given, ModelScope and
   openMind's hub off: a start never downloads. A vision model fetches no image from any public host

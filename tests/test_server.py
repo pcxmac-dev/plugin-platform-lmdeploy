@@ -405,3 +405,46 @@ def test_an_earlier_runs_fallback_in_the_log_is_not_this_ones(world):
     instance = p.instance("default")
     seen = p.look(at(p, instance), instance)
     assert seen.ok and world.kids.made[-1].stops == 0
+
+
+def fell_back_log(p, name="default"):
+    log = p.log_path(name)
+    log.parent.mkdir(parents=True, exist_ok=True)
+    log.write_text(f"2026-11-26 01:00:00 liminal: {name} started (pid 4301): lmdeploy serve api_server ...\n"
+                   "2026-11-26 01:00:09,000 - lmdeploy - WARNING - archs.py:51 - Fallback to pytorch engine because "
+                   "turbomind is not built.\n", encoding="utf-8")
+
+
+def test_a_fallback_is_stopped_by_the_status_with_no_tab_shown(world):
+    """Not only the Models tab: the status, drawn with the page, reads each running server's log (a file read) and
+    stops one that fell back to PyTorch, said as a problem; nothing is asked over the network."""
+    p = ready(world)
+    local(p)
+    p.start("default")
+    child = world.kids.made[-1]
+    fell_back_log(p)
+    status = p.status()
+    problem = status.get("problem", "")
+    assert "handed its model to its PyTorch engine" in problem and "it is stopped" in problem
+    assert child.stops == 1 and not child.alive and world.transport.asked == []
+    assert "PyTorch" not in p.status().get("problem", "")  # stopped once: the next draw has nothing to stop
+
+
+def test_a_fallback_is_never_offered_to_another_plugin(world):
+    p = ready(world)
+    local(p)
+    p.start("default")
+    child = world.kids.made[-1]
+    fell_back_log(p)
+    p.serving()
+    assert child.stops == 1 and not child.alive and world.transport.asked == []
+
+
+def test_a_turbomind_server_is_left_running_by_the_status(world):
+    p = ready(world)
+    local(p)
+    p.start("default")
+    child = world.kids.made[-1]
+    p.status()
+    p.serving()
+    assert child.stops == 0 and child.alive
