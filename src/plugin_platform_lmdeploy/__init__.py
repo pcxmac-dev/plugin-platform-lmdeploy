@@ -48,7 +48,7 @@ from . import apis, models, release, server
 from .apis import APIS
 from .release import Here
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __all__ = ["MACHINE", "LmdeployPlugin", "Here", "__version__"]
 
 ABOUT = ("LMDeploy on this PC or another machine: its environment installed, a server per model started and stopped "
@@ -98,11 +98,13 @@ class LmdeployPlugin(ModelServer):
     JOB_HOOKS = (*ModelServer.JOB_HOOKS, "pull")
     CANCEL_HOOKS = (*ModelServer.CANCEL_HOOKS, "pull")
     START_HOOKS = (*ModelServer.START_HOOKS, "pull")  # a download runs the environment's hf: no install meanwhile
-    # its own reads (the bases' come by themselves): a lookup at the Hub, and the lookups kept forgotten
-    READ_HOOKS = ("find", "clear_found")
     # its own changes asked only from its page (liminal-libs 1.66.0's word): a model downloaded, a downloaded model's
-    # files deleted. The base's changes are the library's to say (1.99.0): the names add up along the class line
-    PAGE_ONLY_HOOKS = ("pull", "delete_model")
+    # files deleted. The base's changes are the library's to say (1.99.0): the names add up along the class line.
+    # Its lookup at the Hub (find) and the lookups kept forgotten (clear_found) are the page's too (0.1.1; the user,
+    # 2026-11-26, of reads made with a key: "Page-only"): find asks huggingface.co about a name of the asker's choosing
+    # with your Hugging Face token where one is kept, and clear_found empties what the Models tab keeps, a choice of
+    # the person at the page. So it has no reads of its own: the bases' come by themselves
+    PAGE_ONLY_HOOKS = ("pull", "delete_model", "find", "clear_found")
     # what it needs of a machine to serve here (the needs plan's rows, read only once liminal_libs.needs exists): each
     # a part, not a requirement, since an instance elsewhere serves anywhere
     NEEDS = (*getattr(ModelServer, "NEEDS", ()),

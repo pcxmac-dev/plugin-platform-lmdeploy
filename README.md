@@ -139,8 +139,11 @@ metrics (off), and the install (on your click alone).
 
 ## Its interface (Internal API)
 
-Its reads beside the bases': `find` and `clear_found`. Its own changes asked only from its page (`PAGE_ONLY_HOOKS`):
-`pull` and `delete_model`; the model server's own changes are the library's to say. What it keeps through the login:
+No reads of its own beside the bases'. Its own hooks are asked only from its page (`PAGE_ONLY_HOOKS`): `pull` and
+`delete_model`, and since 0.1.1 `find` and `clear_found` (the user, 2026-11-26, of reads made with a key: "Page-only").
+`find` asks huggingface.co about a name of the asker's choosing with your Hugging Face token where one is kept, and
+`clear_found` empties the lookups the Models tab keeps. Another plugin's ask and an ask that names no one are refused
+(403) before anything is sent. The model server's own changes are the library's to say. What it keeps through the login:
 its instances (`LIMINAL_AI_LMDEPLOY_INSTANCES`) and a remote instance's key (`LIMINAL_AI_LMDEPLOY_<INSTANCE>_KEY`); its
 one key of its own is the optional Hugging Face token (`LIMINAL_AI_LMDEPLOY_HF_TOKEN`). Its `NEEDS` rows (architecture
 x86-64, an NVIDIA GPU and its driver, glibc 2.28, WSL 2, 20 GiB, the internet), each a part, are written in the
@@ -187,7 +190,8 @@ answers (Qwen/Qwen3-0.6B) and LMDeploy's in the shapes its sources give (C-L1), 
 - `test_models.py`: lookups, downloads, the models folder and what each model is, deletes, what fits.
 - `test_page.py`: Main asking and running nothing; its two tables on each system; the Models tab; every form its
   hook's arguments; no token in any answer; the command line.
-- `test_who_asks.py`: its two changes asked only from its page; its reads by anyone.
+- `test_who_asks.py`: its two changes, its lookup and the lookups forgotten asked only from its page, nothing sent
+  to the Hub for another plugin or for no one.
 - `test_needs.py`: its NEEDS rows, read through getattr alone.
 
 ```

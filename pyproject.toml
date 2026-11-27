@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "plugin-platform-lmdeploy"
-version = "0.1.0"  # the plugin's own release (CHANGELOG.md); the app shows it on the Plugins view
+version = "0.1.1"  # the plugin's own release (CHANGELOG.md); the app shows it on the Plugins view
 description = "LMDeploy for Liminal's platform: installed here, its servers run by TurboMind alone, its models fetched."
 readme = "README.md"
 requires-python = ">=3.10"

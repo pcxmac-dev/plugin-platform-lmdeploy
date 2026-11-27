@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.1.1 (2026-11-26)
+
+Its lookup at the Hub and the lookups forgotten are asked only from the page too: Liminal's complete review
+(Monday-list item 14, findings P2-1 and P3-1) and the user's word of 2026-11-26 for reads made with a key or rights,
+"Page-only".
+
+- **`find` is page-only** (`PAGE_ONLY_HOOKS`, no longer in `READ_HOOKS`). It asks huggingface.co about a repository
+  named by the asker (`/api/models/<repo>` and its `/treesize/main`), with your Hugging Face token where one is kept.
+  Until now any plugin, and any program on this machine through the platform, could make it ask about a model of its
+  choosing under your token, with no click.
+- **`clear_found` is page-only** too: it empties the lookups the Models tab keeps, a change and a choice of the person
+  at the page, and was declared a read.
+- Another plugin's ask and an ask that names no one are refused (403) in words before anything is sent, and
+  liminal-platform asks its login whether you are at the page (401 otherwise). The Models tab asks both as the page,
+  as before. With them every hook of its own says who may ask it.
+- The model server's reads and its two services (`serving`, `models_of`) stay as they were.
+
+Tests: a lookup and the lookups forgotten asked by another plugin and by no one are refused, the Hub is not asked and
+what is kept stays; the page's lookup is made with the token as a bearer, and its clear_found empties them. They fail
+when the two are put back in `READ_HOOKS`. No new requirement.
+
 ## 0.1.0 (2026-11-26)
 
 The first release: LMDeploy as the fourth of the platform's top four inference engines (the user, 2026-11-18: "top 4

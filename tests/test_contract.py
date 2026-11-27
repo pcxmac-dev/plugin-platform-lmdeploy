@@ -54,7 +54,10 @@ def test_what_it_shares_with_the_app_is_declared():
     """Its own reads beside its bases', none a job and none taking an accept_ argument; what it keeps through the
     login; each hook it defines says itself in the first sentence of its docstring."""
     p = module.MACHINE
-    assert p.READ_HOOKS == ("find", "clear_found") and set(p.READ_HOOKS) <= set(p.HOOKS)
+    # no reads of its own since 0.1.1: its lookup at the Hub (find, made with the token) and the lookups forgotten
+    # (clear_found) are its page's alone
+    assert "READ_HOOKS" not in type(p).__dict__ and {"find", "clear_found"} <= set(p.PAGE_ONLY_HOOKS)
+    assert not {"find", "clear_found"} & set(p.READ_HOOKS) and set(p.READ_HOOKS) <= set(p.HOOKS)
     assert not set(p.READ_HOOKS) & set(p.JOB_HOOKS)
     for hook in p.READ_HOOKS:
         assert not [a for a in inspect.signature(getattr(p, hook)).parameters if a.startswith("accept_")]
@@ -81,7 +84,7 @@ def test_its_icon_is_its_makers_mark_drawn_by_the_library():
 
 def test_its_version_and_floor_are_its_pyprojects():
     text = pyproject()
-    assert re.search(r'^version = "([^"]+)"', text, re.M).group(1) == module.__version__ == "0.1.0"
+    assert re.search(r'^version = "([^"]+)"', text, re.M).group(1) == module.__version__ == "0.1.1"
     floor = re.search(r'"liminal-libs>=([0-9.]+)"', text).group(1)
     assert floor == module.MACHINE.LIBS_FLOOR == "1.99.0"  # the base's changes page-only
     assert version_tuple(liminal_libs.__version__) >= version_tuple(floor)
